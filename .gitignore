@@ -40,3 +40,9 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Local environment and sensitive files
+.env
+.env.*
+!.env.example
+รายละเอียดฐานข้อมูล.txt

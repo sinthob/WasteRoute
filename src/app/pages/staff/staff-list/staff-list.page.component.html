@@ -1,0 +1,136 @@
+<div class="max-w-7xl mx-auto staff-list-page">
+  <!-- Header / Actions -->
+  <div
+    class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"
+  >
+    <h2 class="text-xl md:text-2xl font-semibold">ข้อมูลพนักงาน</h2>
+    <button mat-flat-button class="btn-primary" (click)="goCreate()">
+      <mat-icon class="me-2">add</mat-icon>
+      เพิ่มพนักงาน
+    </button>
+  </div>
+
+  <!-- Filter bar: search + role + status + action button -->
+  <form class="filter-bar" (submit)="$event.preventDefault(); fetch()">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        placeholder="ค้นหาพนักงาน"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="role-field">
+      <mat-label>ประเภทพนักงาน</mat-label>
+      <mat-select (valueChange)="onRoleChange($event)" [value]="role()">
+        <mat-option value="">ทั้งหมด</mat-option>
+        <mat-option value="DRIVER">พนักงานขับรถ</mat-option>
+        <mat-option value="COLLECTOR">พนักงานเก็บขยะ</mat-option>
+        <mat-option value="ADMIN">พนักงานวางเเผนเส้นทาง</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!--
+    <mat-form-field appearance="outline" class="status-field">
+      <mat-label>สถานะ</mat-label>
+      <mat-select (valueChange)="onStatusChange($event)" [value]="status()">
+        <mat-option value="">ทั้งหมด</mat-option>
+        <mat-option value="ACTIVE">ACTIVE</mat-option>
+        <mat-option value="INACTIVE">INACTIVE</mat-option>
+      </mat-select>
+    </mat-form-field>
+    -->
+
+    <button type="submit" mat-flat-button class="btn-primary">
+      <mat-icon>search</mat-icon>
+      <span>ค้นหา</span>
+    </button>
+  </form>
+
+  <!-- Loading -->
+  @if (loading()) {
+  <div class="flex items-center justify-center py-16">
+    <mat-spinner diameter="48" />
+  </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && data().length === 0) {
+  <div class="text-center py-20 text-gray-500">
+    <mat-icon class="!text-5xl !h-14 !w-14 mb-2">group</mat-icon>
+    <div>ยังไม่มีข้อมูลพนักงานในระบบ</div>
+  </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && data().length > 0) {
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="data()" class="mat-elevation-z0">
+        <!-- ID -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>รหัส</th>
+          <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+        </ng-container>
+
+        <!-- Firstname -->
+        <ng-container matColumnDef="firstname">
+          <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.prefix }}{{ row.firstname }}
+          </td>
+        </ng-container>
+
+        <!-- Lastname -->
+        <ng-container matColumnDef="lastname">
+          <th mat-header-cell *matHeaderCellDef>นามสกุล</th>
+          <td mat-cell *matCellDef="let row">{{ row.lastname }}</td>
+        </ng-container>
+
+        <!-- Role -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>ประเภทพนักงาน</th>
+          <td mat-cell *matCellDef="let row">{{ roleLabel(row.role) }}</td>
+        </ng-container>
+
+        <!-- Phone -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>โทร</th>
+          <td mat-cell *matCellDef="let row">{{ row.phone_number || "-" }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-right">
+            การจัดการ
+          </th>
+          <td mat-cell *matCellDef="let row" class="text-right">
+            <button
+              type="button"
+              mat-flat-button
+              class="btn-primary btn-detail"
+              (click)="view(row)"
+            >
+              <mat-icon>assignment</mat-icon>
+              <span>รายละเอียด</span>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      class="paginator"
+      [length]="total()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+    />
+  </div>
+  }
+</div>
