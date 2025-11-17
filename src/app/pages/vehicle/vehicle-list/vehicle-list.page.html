@@ -1,0 +1,123 @@
+<div class="max-w-7xl mx-auto vehicle-list-page">
+  <!-- Header / Actions -->
+  <div
+    class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"
+  >
+    <h2 class="text-xl md:text-2xl font-semibold">ข้อมูลยานพาหนะ</h2>
+    <button mat-flat-button class="btn-primary" (click)="goCreate()">
+      <mat-icon class="me-2">add</mat-icon>
+      เพิ่มรถ
+    </button>
+  </div>
+
+  <!-- Filter bar -->
+  <form class="filter-bar" (submit)="$event.preventDefault(); fetch()">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        placeholder="ค้นหาทะเบียนรถ"
+        (input)="onSearchChange($any($event.target).value)"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="status-field">
+      <mat-label>สถานะรถ</mat-label>
+      <mat-select (valueChange)="onStatusChange($event)" [value]="status()">
+        <mat-option value="">ทั้งหมด</mat-option>
+        <mat-option value="AVAILABLE">พร้อมใช้งาน</mat-option>
+        <mat-option value="IN_USE">กำลังใช้งาน</mat-option>
+        <mat-option value="MAINTENANCE">ซ่อมบำรุง</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button type="submit" mat-flat-button class="btn-primary">
+      <mat-icon>search</mat-icon>
+      <span>ค้นหา</span>
+    </button>
+  </form>
+
+  <!-- Loading -->
+  @if (loading()) {
+  <div class="flex items-center justify-center py-16">
+    <mat-spinner diameter="48" />
+  </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && data().length === 0) {
+  <div class="text-center py-20 text-gray-500">
+    <mat-icon class="!text-5xl !h-14 !w-14 mb-2">local_shipping</mat-icon>
+    <div>ยังไม่มีข้อมูลยานพาหนะในระบบ</div>
+  </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && data().length > 0) {
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="data()" class="mat-elevation-z0">
+        <!-- Registration number -->
+        <ng-container matColumnDef="reg">
+          <th mat-header-cell *matHeaderCellDef>ทะเบียน</th>
+          <td mat-cell *matCellDef="let row">{{ row.vehicle_reg_num }}</td>
+        </ng-container>
+
+        <!-- Regular capacity -->
+        <ng-container matColumnDef="regular">
+          <th mat-header-cell *matHeaderCellDef>ความจุขยะทั่วไป</th>
+          <td mat-cell *matCellDef="let row">{{ row.regular_capacity }}</td>
+        </ng-container>
+
+        <!-- Recycle capacity -->
+        <ng-container matColumnDef="recycle">
+          <th mat-header-cell *matHeaderCellDef>ความจุขยะรีไซเคิล</th>
+          <td mat-cell *matCellDef="let row">{{ row.recycle_capacity }}</td>
+        </ng-container>
+
+        <!-- Fuel -->
+        <ng-container matColumnDef="fuel">
+          <th mat-header-cell *matHeaderCellDef>ชนิดน้ำมัน</th>
+          <td mat-cell *matCellDef="let row">{{ row.fuel_category }}</td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>สถานะ</th>
+          <td mat-cell *matCellDef="let row">{{ statusLabel(row.status) }}</td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-right">
+            รายละเอียด
+          </th>
+          <td mat-cell *matCellDef="let row" class="text-right">
+            <button
+              type="button"
+              mat-flat-button
+              class="btn-primary btn-detail"
+              (click)="view(row)"
+            >
+              <mat-icon>assignment</mat-icon>
+              <span>รายละเอียด</span>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      class="paginator"
+      [length]="total()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+    />
+  </div>
+  }
+</div>

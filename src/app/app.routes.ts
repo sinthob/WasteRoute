@@ -35,4 +35,25 @@ export const routes: Routes = [
 				(m) => m.StaffFormPageComponent,
 			),
 	},
+    {
+        path: 'vehicle',
+        loadComponent: () =>
+            import('./pages/vehicle/vehicle-list/vehicle-list.page').then(m => m.VehicleListPage),
+    }
+	,
+	{
+		path: 'vehicle/new',
+		loadComponent: () =>
+			import('./pages/vehicle/vehicle-form/vehicle-form.component').then(m => m.VehicleFormComponent),
+	},
+	{
+		path: 'vehicle/:id',
+		loadComponent: () =>
+			import('./pages/vehicle/vehicle-detail/vehicle-detail.component').then(m => m.VehicleDetailComponent),
+	},
+	{
+		path: 'vehicle/:id/edit',
+		loadComponent: () =>
+			import('./pages/vehicle/vehicle-form/vehicle-form.component').then(m => m.VehicleFormComponent),
+	}
 ];
