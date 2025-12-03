@@ -74,12 +74,16 @@
           <td mat-cell *matCellDef="let row">{{ row.id }}</td>
         </ng-container>
 
+        <!-- Prefix -->
+        <ng-container matColumnDef="prefix">
+          <th mat-header-cell *matHeaderCellDef>คำนำหน้าชื่อ</th>
+          <td mat-cell *matCellDef="let row">{{ row.prefix }}</td>
+        </ng-container>
+
         <!-- Firstname -->
         <ng-container matColumnDef="firstname">
           <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
-          <td mat-cell *matCellDef="let row">
-            {{ row.prefix }}{{ row.firstname }}
-          </td>
+          <td mat-cell *matCellDef="let row">{{ row.firstname }}</td>
         </ng-container>
 
         <!-- Lastname -->

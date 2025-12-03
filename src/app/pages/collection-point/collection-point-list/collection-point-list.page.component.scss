@@ -9,7 +9,7 @@
   --white: #FFFFFF;
 }
 
-.vehicle-list-page { color: var(--text-900); }
+.collection-point-list-page { color: var(--text-900); }
 
 /* Filter bar */
 .filter-bar {
@@ -19,8 +19,7 @@
   gap: 12px;
   margin-bottom: 16px;
 
-  .search-field { min-width: 200px; flex: 1 1 220px; }
-  .status-field { min-width: 180px; flex: 1 1 200px; }
+  .search-field, .status-field { min-width: 220px; flex: 1 1 240px; }
 
   .mat-mdc-form-field {
     --mdc-outlined-text-field-outline-color: var(--border-200);
@@ -61,7 +60,7 @@ table[mat-table] {
   .btn-detail { height: 36px; padding: 0 14px; border-radius: 9999px; background: var(--brand-900); color: var(--white); &:hover { background: var(--brand-700); } &:focus-visible { outline: 3px solid color-mix(in oklab, var(--brand-900), white 60%); outline-offset: 2px; } }
 }
 
-button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid color-mix(in oklab, var(--brand-900), white 60%); outline-offset: 2px; }
+.empty-row .empty-cell { text-align: center; padding: 24px; color: var(--text-600); }
 
 .paginator.mat-mdc-paginator {
   color: var(--text-600); padding-inline: 8px;
@@ -70,6 +69,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px s
   .mat-mdc-icon-button { border: 1px solid var(--brand-700); border-radius: 9999px; }
   .mat-mdc-paginator-range-label { color: var(--text-600); }
 }
+
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid color-mix(in oklab, var(--brand-900), white 60%); outline-offset: 2px; }
 
 @media (max-width: 768px) {
   .filter-bar { gap: 10px; }

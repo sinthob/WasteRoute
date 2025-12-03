@@ -84,7 +84,8 @@ export class VehicleDetailComponent {
   delete() {
     const v = this.vehicle();
     if (!v) return;
-    if (!confirm(`ลบข้อมูลรถทะเบียน ${v.vehicle_reg_num}?`)) return;
+    const regNum = v.registration_number || v.vehicle_reg_num || 'ไม่ระบุ';
+    if (!confirm(`ลบข้อมูลรถทะเบียน ${regNum}?`)) return;
     this.vehicleService.delete(v.id).subscribe({
       next: () => this.back(),
       error: () => {/* noop simple flow */},
@@ -94,10 +95,13 @@ export class VehicleDetailComponent {
   deactivate() {
     const v = this.vehicle();
     if (!v) return;
-    const to = v.status === 'MAINTENANCE' ? 'AVAILABLE' : 'MAINTENANCE';
+    const currentStatus = (v.status?.toUpperCase() || 'AVAILABLE') as VehicleStatus;
+    const to = currentStatus === 'MAINTENANCE' ? 'AVAILABLE' : 'MAINTENANCE';
     const label = to === 'MAINTENANCE' ? 'ปิดใช้งานรถคันนี้' : 'เปิดใช้งานรถคันนี้';
     if (!confirm(`${label}?`)) return;
-    this.vehicleService.update(v.id, { status: to as VehicleStatus }).subscribe({
+    
+    // ส่ง lowercase ให้ backend
+    this.vehicleService.update(v.id, { status: to.toLowerCase() }).subscribe({
       next: (res) => this.vehicle.set(res.data),
       error: () => {/* noop */},
     });
@@ -109,16 +113,47 @@ export class VehicleDetailComponent {
     return 'VR-' + id.toString().padStart(6, '0');
   }
 
-  statusLabel(s: VehicleStatus | undefined): string {
-    if (s === 'AVAILABLE') return 'พร้อมใช้งาน';
-    if (s === 'IN_USE') return 'กำลังใช้งาน';
-    if (s === 'MAINTENANCE') return 'ซ่อมบำรุง';
+  // Helper methods สำหรับรองรับทั้ง backend field names และ frontend field names
+  getRegNum(): string {
+    const v = this.vehicle();
+    return v?.registration_number || v?.vehicle_reg_num || '-';
+  }
+
+  getRegularCapacity(): number {
+    const v = this.vehicle();
+    return v?.regular_waste_capacity_kg ?? v?.regular_capacity ?? 0;
+  }
+
+  getRecycleCapacity(): number {
+    const v = this.vehicle();
+    return v?.recyclable_waste_capacity_kg ?? v?.recycle_capacity ?? 0;
+  }
+
+  getFuelType(): string {
+    const v = this.vehicle();
+    const fuel = v?.fuel_type || v?.fuel_category;
+    return this.fuelLabel(fuel?.toUpperCase() as FuelCategory);
+  }
+
+  getDepreciation(): number {
+    const v = this.vehicle();
+    return v?.depreciation_value_per_year ?? v?.depreciation_thb ?? 0;
+  }
+
+  statusLabel(s: VehicleStatus | string | undefined): string {
+    if (!s) return '-';
+    const upper = s.toUpperCase();
+    if (upper === 'AVAILABLE') return 'พร้อมใช้งาน';
+    if (upper === 'IN_USE') return 'กำลังใช้งาน';
+    if (upper === 'MAINTENANCE') return 'ซ่อมบำรุง';
     return '-';
   }
 
-  fuelLabel(f: FuelCategory | undefined): string {
-    if (f === 'DIESEL') return 'ดีเซล (Diesel)';
-    if (f === 'GASOLINE') return 'เบนซิน (Gasoline)';
+  fuelLabel(f: FuelCategory | string | undefined): string {
+    if (!f) return '-';
+    const upper = f.toUpperCase();
+    if (upper === 'DIESEL') return 'ดีเซล (Diesel)';
+    if (upper === 'GASOLINE') return 'เบนซิน (Gasoline)';
     return '-';
   }
 

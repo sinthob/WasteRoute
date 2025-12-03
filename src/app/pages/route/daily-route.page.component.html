@@ -1,0 +1,28 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">เส้นทางเก็บขยะประจำวัน</h1>
+
+  <div class="mb-6">
+    <button
+      (click)="testDockerConnection()"
+      [disabled]="loading"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded disabled:bg-gray-400"
+    >
+      {{ loading ? "กำลังส่งข้อมูล..." : "ทดสอบส่งข้อมูลไปยัง Docker" }}
+    </button>
+  </div>
+
+  <div *ngIf="response" class="bg-gray-100 p-4 rounded">
+    <h2 class="text-xl font-semibold mb-3">ผลลัพธ์จาก Docker:</h2>
+    <pre class="bg-white p-4 rounded overflow-auto max-h-96 text-sm">{{
+      response | json
+    }}</pre>
+  </div>
+
+  <div
+    *ngIf="error"
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4"
+  >
+    <h2 class="font-bold">เกิดข้อผิดพลาด:</h2>
+    <p>{{ error }}</p>
+  </div>
+</div>

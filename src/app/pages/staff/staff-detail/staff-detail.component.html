@@ -4,6 +4,8 @@
     class="btn btn-delete"
     type="button"
     aria-label="ลบข้อมูล"
+    (click)="delete()"
+    [disabled]="loading() || !staff()"
   >
     <mat-icon>delete</mat-icon>
     ลบข้อมูล
@@ -36,32 +38,6 @@
     </div>
     <mat-card-content>
       <div class="form-grid">
-        <mat-form-field appearance="outline" floatLabel="always">
-          <mat-label>รหัสพนักงาน</mat-label>
-          <input
-            matInput
-            [value]="staffCode()"
-            readonly
-            id="empCode"
-            aria-label="รหัสพนักงาน"
-            tabindex="-1"
-            class="no-caret"
-          />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" floatLabel="always">
-          <mat-label>ประเภทพนักงาน</mat-label>
-          <input
-            matInput
-            [value]="roleLabel()"
-            readonly
-            id="empType"
-            aria-label="ประเภทพนักงาน"
-            tabindex="-1"
-            class="no-caret"
-          />
-        </mat-form-field>
-
         <mat-form-field appearance="outline" floatLabel="always">
           <mat-label>คำนำหน้าชื่อ*</mat-label>
           <input
@@ -96,6 +72,19 @@
             readonly
             id="lastName"
             aria-label="นามสกุล"
+            tabindex="-1"
+            class="no-caret"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>ประเภทพนักงาน</mat-label>
+          <input
+            matInput
+            [value]="roleLabel()"
+            readonly
+            id="empType"
+            aria-label="ประเภทพนักงาน"
             tabindex="-1"
             class="no-caret"
           />

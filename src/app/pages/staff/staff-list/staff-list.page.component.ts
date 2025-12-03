@@ -51,11 +51,17 @@ export class StaffListPageComponent {
   pageIndex = signal<number>(0);
   pageSize = signal<number>(10);
 
-  displayedColumns = ['id', 'firstname', 'lastname', 'role', 'phone', 'actions'];
+  displayedColumns = ['prefix', 'firstname', 'lastname', 'role', 'phone', 'actions'];
 
   constructor() {
     if (this.isBrowser) {
       effect(() => {
+        // Effect จะเรียก fetch() อัตโนมัติเมื่อ signal ใดๆ เปลี่ยน
+        this.search();
+        this.role();
+        this.status();
+        this.pageIndex();
+        this.pageSize();
         this.fetch();
       });
     }
@@ -64,25 +70,25 @@ export class StaffListPageComponent {
   onSearchChange(value: string) {
     this.pageIndex.set(0);
     this.search.set(value);
-    this.fetch();
+    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
   }
 
   onRoleChange(value: string) {
     this.pageIndex.set(0);
     this.role.set(value);
-    this.fetch();
+    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
   }
 
   onStatusChange(value: string) {
     this.pageIndex.set(0);
     this.status.set(value);
-    this.fetch();
+    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
   }
 
   onPageChange(evt: PageEvent) {
     this.pageIndex.set(evt.pageIndex);
     this.pageSize.set(evt.pageSize);
-    this.fetch();
+    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
   }
 
   fetch() {
@@ -90,26 +96,58 @@ export class StaffListPageComponent {
   this.loading.set(true);
     this.error.set(null);
 
+    // ========== ใช้ข้อมูลจาก Server จริง (Backend) ==========
+    const params = {
+      search: this.search(),
+      role: this.role() ? this.role().toLowerCase() : '', // แปลงเป็น lowercase สำหรับ server
+      status: this.status() ? this.status().toLowerCase() : '', // แปลงเป็น lowercase สำหรับ server
+      page: this.pageIndex() + 1,
+      per_page: this.pageSize(), // ใช้ per_page สำหรับ server จริง
+    };
+    
+    console.log('🔍 Sending filter params to server:', params);
+    
     this.staffService
-      .list({
-        search: this.search(),
-        role: this.role(),
-        status: this.status(),
-        page: this.pageIndex() + 1,
-        limit: this.pageSize(),
-      })
+      .list(params)
       .subscribe({
-        next: (res) => {
-          this.data.set(res.data || []);
-          this.total.set(res.total ?? res.data?.length ?? 0);
+        next: (res: any) => {
+          console.log('📥 Staff list response:', res);
+          // Server ส่ง: {success: true, data: {pagination: {...}, staffs: [...]}}
+          const staffs = res.data?.staffs || [];
+          const total = res.data?.pagination?.total || staffs.length;
+          this.data.set(staffs);
+          this.total.set(total);
           this.loading.set(false);
         },
         error: (err) => {
           this.loading.set(false);
           this.error.set('โหลดข้อมูลล้มเหลว');
           this.snack.open('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'ปิด', { duration: 3000 });
+          console.error('Error loading staff:', err);
         },
       });
+
+    // ========== ใช้ข้อมูลจาก Mock Server (เก็บไว้เป็น reference) ==========
+    // this.staffService
+    //   .list({
+    //     search: this.search(),
+    //     role: this.role(),
+    //     status: this.status(),
+    //     page: this.pageIndex() + 1,
+    //     limit: this.pageSize(), // ใช้ limit สำหรับ mock server
+    //   })
+    //   .subscribe({
+    //     next: (res) => {
+    //       this.data.set(res.data || []);
+    //       this.total.set(res.total ?? res.data?.length ?? 0);
+    //       this.loading.set(false);
+    //     },
+    //     error: (err) => {
+    //       this.loading.set(false);
+    //       this.error.set('โหลดข้อมูลล้มเหลว');
+    //       this.snack.open('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'ปิด', { duration: 3000 });
+    //     },
+    //   });
   }
 
   goCreate() {
@@ -136,10 +174,11 @@ export class StaffListPageComponent {
   }
 
   // mapping role code to Thai label for table display
-  roleLabel(role: StaffRole | ''): string {
-    if (role === 'DRIVER') return 'พนักงานขับรถ';
-    if (role === 'COLLECTOR') return 'พนักงานเก็บขยะ';
-    if (role === 'ADMIN') return 'พนักงานวางเเผนเส้นทาง';
+  roleLabel(role: StaffRole | string | ''): string {
+    const roleUpper = (role || '').toUpperCase();
+    if (roleUpper === 'DRIVER') return 'พนักงานขับรถ';
+    if (roleUpper === 'COLLECTOR') return 'พนักงานเก็บขยะ';
+    if (roleUpper === 'ADMIN') return 'พนักงานวางเเผนเส้นทาง';
     return '-';
   }
 }

@@ -9,11 +9,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-staff-detail-page',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatCardModule, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, RouterLink],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatCardModule, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSnackBarModule, RouterLink],
   templateUrl: './staff-detail.component.html',
   styleUrls: ['./staff-detail.component.scss']
 })
@@ -21,6 +22,7 @@ export class StaffDetailPageComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private staffService = inject(StaffService);
+  private snack = inject(MatSnackBar);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
@@ -53,9 +55,38 @@ export class StaffDetailPageComponent {
 
   roleLabel(): string {
     const r = this.staff()?.role;
-    if (r === 'DRIVER') return 'พนักงานขับรถ';
-    if (r === 'COLLECTOR') return 'พนักงานเก็บขยะ';
-    if (r === 'ADMIN') return 'พนักงานวางเเผนเส้นทาง';
+    const roleUpper = (r || '').toUpperCase();
+    if (roleUpper === 'DRIVER') return 'พนักงานขับรถ';
+    if (roleUpper === 'COLLECTOR') return 'พนักงานเก็บขยะ';
+    if (roleUpper === 'ADMIN') return 'พนักงานวางเเผนเส้นทาง';
     return '-';
+  }
+
+  delete() {
+    const s = this.staff();
+    if (!s) return;
+    
+    if (!confirm(`ลบพนักงาน ${s.firstname} ${s.lastname}?`)) return;
+    
+    this.loading.set(true);
+    this.staffService.delete(s.id).subscribe({
+      next: () => {
+        this.snack.open('ลบสำเร็จ', 'ปิด', { duration: 2000 });
+        this.router.navigate(['/staff']);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error('❌ Delete error:', err);
+        
+        let errorMsg = 'ลบไม่สำเร็จ';
+        if (err.error?.errors?.[0]?.message) {
+          errorMsg = err.error.errors[0].message;
+        } else if (err.error?.message) {
+          errorMsg = err.error.message;
+        }
+        
+        this.snack.open(errorMsg, 'ปิด', { duration: 3000 });
+      },
+    });
   }
 }

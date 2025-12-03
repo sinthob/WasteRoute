@@ -38,18 +38,26 @@ export class StaffService {
    *  - status: กรองตามสถานะ (ACTIVE/INACTIVE)
    *  - page: หน้าที่ต้องการ (เริ่ม 1)
    *  - limit: จำนวนต่อหน้า (เช่น 10)
+   *  - per_page: จำนวนต่อหน้า (สำหรับ server จริง - ใช้แทน limit)
    * @returns Observable<StaffListResponse> ที่มีข้อมูลรายการพนักงานและอาจมี total กลับมา
    *
    * หมายเหตุ:
    * - HttpParams เป็น immutable (เปลี่ยนค่าแล้วได้ instance ใหม่) เลยต้องเขียนแบบ params = params.set(...)
    */
-  list(options: { search?: string; role?: string; status?: string; page?: number; limit?: number } = {}): Observable<StaffListResponse> {
+  list(options: { search?: string; role?: string; status?: string; page?: number; limit?: number; per_page?: number } = {}): Observable<StaffListResponse> {
     let params = new HttpParams();
     if (options.search) params = params.set('search', options.search);
     if (options.role) params = params.set('role', options.role);
     if (options.status) params = params.set('status', options.status);
     params = params.set('page', String(options.page ?? 1));
-    params = params.set('limit', String(options.limit ?? 10));
+    
+    // ใช้ per_page สำหรับ server จริง, limit สำหรับ mock
+    if (options.per_page) {
+      params = params.set('per_page', String(options.per_page));
+    } else {
+      params = params.set('limit', String(options.limit ?? 10));
+    }
+    
     return this.http.get<StaffListResponse>(this.baseUrl, { params });
   }
 

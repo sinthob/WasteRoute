@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, effect, inject, signal } from '@ang
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +21,7 @@ import { Vehicle, VehicleStatus } from '../../../core/models/vehicle.model';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
@@ -47,31 +49,19 @@ export class VehicleListPage {
   total = signal<number>(0);
 
   // filters
-  search = signal<string>('');
-  status = signal<string>(''); // AVAILABLE | IN_USE | MAINTENANCE | ''
+  searchReg = '';
+  searchDriver = '';
+  status = '';
+  fuelCategory = '';
   pageIndex = signal<number>(0);
   pageSize = signal<number>(10);
 
-  displayedColumns = ['reg', 'regular', 'recycle', 'fuel', 'status', 'actions'];
+  displayedColumns = ['reg', 'driver', 'regular', 'recycle', 'fuel', 'status', 'actions'];
 
   constructor() {
     if (this.isBrowser) {
-      effect(() => {
-        this.fetch();
-      });
+      this.fetch();
     }
-  }
-
-  onSearchChange(value: string) {
-    this.pageIndex.set(0);
-    this.search.set(value);
-    this.fetch();
-  }
-
-  onStatusChange(value: string) {
-    this.pageIndex.set(0);
-    this.status.set(value);
-    this.fetch();
   }
 
   onPageChange(evt: PageEvent) {
@@ -85,25 +75,56 @@ export class VehicleListPage {
     this.loading.set(true);
     this.error.set(null);
 
+    // ========== ใช้ข้อมูลจาก Server จริง (Backend) ==========
     this.vehicleService
       .list({
-        search: this.search(),
-        status: this.status(),
+        search: this.searchReg,
+        driver: this.searchDriver,
+        status: this.status,
+        fuel: this.fuelCategory,
         page: this.pageIndex() + 1,
-        limit: this.pageSize(),
+        per_page: this.pageSize(), // ใช้ per_page สำหรับ server จริง
       })
       .subscribe({
-        next: (res) => {
-          this.data.set(res.data || []);
-          this.total.set(res.total ?? res.data?.length ?? 0);
+        next: (res: any) => {
+          console.log('📥 Vehicle list response:', res);
+          // Server ส่ง: {success: true, data: {pagination: {...}, vehicles: [...]}}
+          const vehicles = res.data?.vehicles || [];
+          const total = res.data?.pagination?.total || vehicles.length;
+          this.data.set(vehicles);
+          this.total.set(total);
           this.loading.set(false);
         },
-        error: () => {
+        error: (err) => {
           this.loading.set(false);
           this.error.set('โหลดข้อมูลรถล้มเหลว');
           this.snack.open('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'ปิด', { duration: 3000 });
+          console.error('Error loading vehicles:', err);
         },
       });
+
+    // ========== ใช้ข้อมูลจาก Mock Server (เก็บไว้เป็น reference) ==========
+    // this.vehicleService
+    //   .list({
+    //     search: this.searchReg,
+    //     driver: this.searchDriver,
+    //     status: this.status,
+    //     fuel: this.fuelCategory,
+    //     page: this.pageIndex() + 1,
+    //     limit: this.pageSize(), // ใช้ limit สำหรับ mock server
+    //   })
+    //   .subscribe({
+    //     next: (res) => {
+    //       this.data.set(res.data || []);
+    //       this.total.set(res.total ?? res.data?.length ?? 0);
+    //       this.loading.set(false);
+    //     },
+    //     error: () => {
+    //       this.loading.set(false);
+    //       this.error.set('โหลดข้อมูลรถล้มเหลว');
+    //       this.snack.open('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'ปิด', { duration: 3000 });
+    //     },
+    //   });
   }
 
   goCreate() {
@@ -125,10 +146,11 @@ export class VehicleListPage {
     });
   }
 
-  statusLabel(s: VehicleStatus | ''): string {
-    if (s === 'AVAILABLE') return 'พร้อมใช้งาน';
-    if (s === 'IN_USE') return 'กำลังใช้งาน';
-    if (s === 'MAINTENANCE') return 'ซ่อมบำรุง';
+  statusLabel(s: VehicleStatus | string | ''): string {
+    const statusUpper = (s || '').toUpperCase();
+    if (statusUpper === 'AVAILABLE') return 'พร้อมใช้งาน';
+    if (statusUpper === 'IN_USE') return 'กำลังใช้งาน';
+    if (statusUpper === 'MAINTENANCE') return 'ซ่อมบำรุง';
     return '-';
   }
 }

@@ -36,7 +36,7 @@ export class StaffFormPageComponent {
     firstname: ['', Validators.required],
     lastname: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: [''],
+    password: ['', this.id ? [] : [Validators.required, Validators.minLength(6)]],
     role: ['DRIVER', Validators.required],
     status: ['ACTIVE'],
     phone_number: [''],
@@ -54,8 +54,8 @@ export class StaffFormPageComponent {
             firstname: d.firstname,
             lastname: d.lastname,
             email: d.email,
-            role: d.role,
-            status: d.status || 'ACTIVE',
+            role: (d.role || 'DRIVER').toUpperCase(), // แปลง role เป็น uppercase สำหรับ form
+            status: (d.status || 'ACTIVE').toUpperCase(), // แปลง status เป็น uppercase สำหรับ form
             phone_number: d.phone_number || '',
             s_image: d.s_image || '',
           });
@@ -69,17 +69,35 @@ export class StaffFormPageComponent {
   submit() {
     if (this.form.invalid) return this.form.markAllAsTouched();
     const raw = this.form.getRawValue();
-    const payload = {
+    
+    // ========== Payload สำหรับ Server จริง (Backend) ==========
+    const payload: any = {
       prefix: raw.prefix ?? '',
       firstname: raw.firstname ?? '',
       lastname: raw.lastname ?? '',
       email: raw.email ?? '',
-      password: raw.password ?? '',
-      role: (raw.role ?? 'DRIVER') as any,
-      status: (raw.status ?? 'ACTIVE') as any,
+      role: (raw.role ?? 'driver').toLowerCase(), // Server ใช้ lowercase: driver, collector, admin
+      status: (raw.status ?? 'active').toLowerCase(), // Server ใช้ lowercase: active, inactive
       phone_number: raw.phone_number ?? '',
-      s_image: raw.s_image ?? '',
     };
+
+    // เพิ่ม password เฉพาะตอน create (ไม่ใช่ edit)
+    if (!this.id && raw.password) {
+      payload.password = raw.password;
+    }
+
+    // ========== Payload สำหรับ Mock Server (เก็บไว้เป็น reference) ==========
+    // const payload = {
+    //   prefix: raw.prefix ?? '',
+    //   firstname: raw.firstname ?? '',
+    //   lastname: raw.lastname ?? '',
+    //   email: raw.email ?? '',
+    //   password: raw.password ?? '',
+    //   role: (raw.role ?? 'DRIVER') as any, // Mock ใช้ uppercase
+    //   status: (raw.status ?? 'ACTIVE') as any, // Mock ใช้ uppercase
+    //   phone_number: raw.phone_number ?? '',
+    //   s_image: raw.s_image ?? '',
+    // };
 
     this.loading.set(true);
     const req = this.id
@@ -87,14 +105,25 @@ export class StaffFormPageComponent {
       : this.staffService.create(payload);
 
     req.subscribe({
-      next: () => {
+      next: (response) => {
         this.loading.set(false);
+        console.log('✅ Save success:', response);
         this.snack.open('บันทึกสำเร็จ', 'ปิด', { duration: 2000 });
         this.router.navigate(['/staff']);
       },
-      error: () => {
+      error: (err) => {
         this.loading.set(false);
-        this.snack.open('บันทึกล้มเหลว', 'ปิด', { duration: 2500 });
+        console.error('❌ Save error:', err);
+        
+        // แสดง error message จาก server
+        let errorMsg = 'บันทึกล้มเหลว';
+        if (err.error?.errors?.[0]?.message) {
+          errorMsg = err.error.errors[0].message;
+        } else if (err.error?.message) {
+          errorMsg = err.error.message;
+        }
+        
+        this.snack.open(errorMsg, 'ปิด', { duration: 3000 });
       },
     });
   }

@@ -40,18 +40,6 @@
     </div>
 
     <mat-form-field appearance="outline" floatLabel="always">
-      <mat-label>รหัสพนักงาน</mat-label>
-      <input
-        matInput
-        [value]="staffCode()"
-        id="empCode"
-        aria-label="รหัสพนักงาน"
-        tabindex="-1"
-        class="no-caret"
-      />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" floatLabel="always">
       <mat-label>ประเภทพนักงาน</mat-label>
       <mat-select formControlName="role">
         <mat-option value="DRIVER">พนักงานขับรถ</mat-option>
@@ -78,6 +66,11 @@
     <mat-form-field appearance="outline" floatLabel="always">
       <mat-label>อีเมล*</mat-label>
       <input matInput formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" *ngIf="!id">
+      <mat-label>รหัสผ่าน*</mat-label>
+      <input matInput type="password" formControlName="password" />
     </mat-form-field>
 
     <mat-form-field appearance="outline" floatLabel="always">

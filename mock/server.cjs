@@ -148,12 +148,42 @@ function matchesVehicleSearch(vehicle, term) {
 
 // List -> { success, data, total }
 server.get('/api/v1/vehicle', (req, res) => {
-  const { search = '', status, fuel_category, page = '1', limit = '10' } = req.query;
+  const { search = '', driver = '', status, fuel_category, page = '1', limit = '10' } = req.query;
   let data = getVehicleCollection();
+  const staffData = getStaffCollection();
+
+  // Populate driver information
+  data = data.map(vehicle => {
+    if (vehicle.current_driver_id) {
+      const driverInfo = staffData.find(s => Number(s.id) === Number(vehicle.current_driver_id));
+      if (driverInfo) {
+        return {
+          ...vehicle,
+          current_driver: {
+            id: driverInfo.id,
+            prefix: driverInfo.prefix,
+            firstname: driverInfo.firstname,
+            lastname: driverInfo.lastname
+          }
+        };
+      }
+    }
+    return { ...vehicle, current_driver: null };
+  });
 
   if (status) data = data.filter((v) => String(v.status) === String(status));
   if (fuel_category) data = data.filter((v) => String(v.fuel_category) === String(fuel_category));
   if (search) data = data.filter((v) => matchesVehicleSearch(v, search));
+  
+  // Filter by driver name
+  if (driver) {
+    const driverTerm = driver.toLowerCase();
+    data = data.filter((v) => {
+      if (!v.current_driver) return false;
+      const driverName = `${v.current_driver.prefix} ${v.current_driver.firstname} ${v.current_driver.lastname}`.toLowerCase();
+      return driverName.includes(driverTerm);
+    });
+  }
 
   const total = data.length;
   const pageNum = parseInt(page, 10) > 0 ? parseInt(page, 10) : 1;
@@ -170,6 +200,21 @@ server.get('/api/v1/vehicle/:id', (req, res) => {
   const id = Number(req.params.id);
   const item = getVehicleCollection().find((v) => Number(v.id) === id);
   if (!item) return res.status(404).json({ success: false, message: 'Not found' });
+  
+  // Populate driver information
+  if (item.current_driver_id) {
+    const staffData = getStaffCollection();
+    const driverInfo = staffData.find(s => Number(s.id) === Number(item.current_driver_id));
+    if (driverInfo) {
+      item.current_driver = {
+        id: driverInfo.id,
+        prefix: driverInfo.prefix,
+        firstname: driverInfo.firstname,
+        lastname: driverInfo.lastname
+      };
+    }
+  }
+  
   return res.json({ success: true, data: item });
 });
 
@@ -229,3 +274,74 @@ server.delete('/api/v1/vehicle/:id', (req, res) => {
   coll.remove({ id }).write();
   return res.json({ success: true });
 });
+
+// ---- Collection Point endpoints ----
+function getCollectionPointCollection() {
+  return router.db.get('collection_point').value();
+}
+
+// List all collection points
+server.get('/api/v1/collection_point', (req, res) => {
+  const data = getCollectionPointCollection();
+  res.json({ success: true, data, total: data.length });
+});
+
+// Get one collection point by point_id
+server.get('/api/v1/collection_point/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const point = getCollectionPointCollection().find((p) => Number(p.point_id) === id);
+  if (!point) return res.status(404).json({ success: false, message: 'Not found' });
+  return res.json({ success: true, data: point });
+});
+
+// Create collection point -> { success, data }
+server.post('/api/v1/collection_point', (req, res) => {
+  const body = req.body || {};
+  const coll = router.db.get('collection_point');
+  const all = coll.value();
+  const nextId = (all.reduce((m, p) => Math.max(m, Number(p.point_id) || 0), 0) || 0) + 1;
+
+  const newItem = {
+    point_id: nextId,
+    point_name: body.point_name ?? '',
+    latitude: Number.isFinite(body.latitude) ? body.latitude : 0,
+    longitude: Number.isFinite(body.longitude) ? body.longitude : 0,
+    status: body.status ?? 'ACTIVE',
+    point_image: body.point_image ?? null,
+    address: body.address ?? '',
+    problem_reported: body.problem_reported ?? '',
+    regular_capacity: Number.isFinite(body.regular_capacity) ? body.regular_capacity : 0,
+    recycle_capacity: Number.isFinite(body.recycle_capacity) ? body.recycle_capacity : 0
+  };
+
+  coll.push(newItem).write();
+  res.status(201).json({ success: true, data: newItem });
+});
+
+// Update collection point -> { success, data }
+server.put('/api/v1/collection_point/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const body = req.body || {};
+  const coll = router.db.get('collection_point');
+  const current = coll.find({ point_id: id }).value();
+  if (!current) return res.status(404).json({ success: false, message: 'Not found' });
+
+  const updated = {
+    ...current,
+    ...body,
+    point_id: id // ensure point_id not changed
+  };
+  coll.find({ point_id: id }).assign(updated).write();
+  return res.json({ success: true, data: updated });
+});
+
+// Delete collection point -> { success }
+server.delete('/api/v1/collection_point/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const coll = router.db.get('collection_point');
+  const exists = coll.find({ point_id: id }).value();
+  if (!exists) return res.status(404).json({ success: false, message: 'Not found' });
+  coll.remove({ point_id: id }).write();
+  return res.json({ success: true });
+});
+
