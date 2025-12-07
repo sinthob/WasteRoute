@@ -19,19 +19,23 @@
   </div>
   } @if (!loading()) { @if (filteredDrivers().length === 0) {
   <div class="empty-state">
-    <mat-icon>person_off</mat-icon>
+    <mat-icon class="empty-state__icon">person_off</mat-icon>
     <p>ไม่พบพนักงานขับรถ</p>
   </div>
   } @else {
   <div class="table-container">
-    <table mat-table [dataSource]="filteredDrivers()" class="driver-table">
+    <table
+      mat-table
+      [dataSource]="filteredDrivers()"
+      class="driver-table mat-elevation-z0"
+    >
       <!-- Select Column -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let driver">
           <mat-icon
             class="select-icon"
-            [class.selected]="isSelected(driver)"
+            [class.select-icon--selected]="isSelected(driver)"
             (click)="selectDriver(driver)"
           >
             {{

@@ -1,119 +1,78 @@
-::ng-deep .driver-select-dialog {
-  .mat-mdc-dialog-container {
-    --mat-dialog-container-shape: 16px;
-  }
-}
-
-mat-dialog-content {
-  min-width: 600px;
-  max-width: 800px;
-  min-height: 400px;
-  max-height: 600px;
-  padding: 20px;
-}
-
+/* ช่องค้นหา */
 .search-container {
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 .search-field {
   width: 100%;
 }
 
+/* Loading state */
 .loading-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 300px;
+  padding: 2rem 0;
 }
 
+/* Empty state */
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 300px;
-  color: #64748b;
-  
-  mat-icon {
-    font-size: 64px;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 16px;
-    opacity: 0.5;
-  }
-  
-  p {
-    font-size: 16px;
-    margin: 0;
+  text-align: center;
+  padding: 2rem 0;
+  color: rgba(0, 0, 0, 0.6);
+
+  &__icon {
+    font-size: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 0.5rem;
   }
 }
 
+/* ตารางคนขับ */
 .table-container {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
+  max-height: 360px;
+  overflow: auto;
 }
 
 .driver-table {
   width: 100%;
-  
-  th {
-    background: #f8fafc;
-    font-weight: 600;
-    color: #475569;
-  }
-  
-  tr.mat-mdc-row {
-    cursor: pointer;
-    transition: background-color 0.2s;
-    
-    &:hover {
-      background-color: #f1f5f9;
-    }
-    
-    &.selected-row {
-      background-color: #dbeafe;
-    }
-  }
 }
 
+/* ไอคอนเลือก driver */
 .select-icon {
   cursor: pointer;
-  color: #94a3b8;
-  transition: color 0.2s;
-  
-  &.selected {
-    color: #2563eb;
-  }
-  
-  &:hover {
-    color: #3b82f6;
+  font-size: 20px;
+  vertical-align: middle;
+  color: rgba(0, 0, 0, 0.38);
+
+  &--selected {
+    color: #1976d2; /* primary-ish */
   }
 }
 
+/* แถวที่ถูกเลือก */
+.selected-row {
+  background-color: #e3f2fd;
+}
+
+/* badge "ปัจจุบัน" */
 .current-badge {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 2px 8px;
-  background: #dcfce7;
-  color: #15803d;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 12px;
-}
-
-.role-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  background: #dbeafe;
-  color: #1e40af;
-  font-size: 13px;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
   font-weight: 500;
-  border-radius: 12px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
 }
 
-mat-dialog-actions {
-  padding: 16px 20px;
-  border-top: 1px solid #e5e7eb;
+/* badge ตำแหน่ง */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background-color: #ede7f6;
+  color: #5e35b1;
 }

@@ -1,4 +1,5 @@
 .staff-list-page {
+  background: #ffffff;
   max-width: 72rem;
   margin: 0 auto;
   padding: 1rem;
@@ -60,6 +61,9 @@
 }
 
 .staff-list-table {
+
+  background: #ffffff;
+
   &__scroll {
     overflow-x: auto;
   }
@@ -74,7 +78,7 @@
   }
 }
 
-/* ปุ่ม reusable ทั่วโปรเจ็กต์ */
+/* ปุ่ม reusable */
 
 .btn {
   display: inline-flex;
@@ -85,12 +89,16 @@
     font-size: 18px;
   }
 
-  &--primary {
-    // ใช้สี theme ผ่าน Angular Material ก็ได้ ถ้าอยากย้ายเข้า styles.scss ทีหลัง
-  }
-
+  // .btn--primary ไม่จำเป็นถ้าใช้ color="primary"
   &--sm {
     padding-inline: 0.75rem;
     font-size: 0.875rem;
   }
+}
+
+
+.staff-list-table .mat-mdc-table,
+.staff-list-table .mat-mdc-header-row,
+.staff-list-table .mat-mdc-row {
+  background-color: #ffffff;
 }

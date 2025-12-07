@@ -1,147 +1,406 @@
-// Daily Route Page Styles
-
-.container {
-  max-width: 1400px;
+.daily-route-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
 }
 
-// Map placeholder styling
-.bg-gray-200 {
-  background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
-  border: 2px dashed #d1d5db;
+.daily-route-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 1.5rem;
 }
 
-// Stats card animations
-.bg-white {
-  transition: all 0.3s ease;
+/* main grid layout */
+.daily-route-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+.daily-route-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.daily-route-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* map card */
+.daily-route-map-card {
+  height: 24rem;
+  display: flex;
+  padding: 0;
+}
+
+.daily-route-map {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+.daily-route-map__placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75rem;
+  background: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.daily-route-map__icon {
+  width: 6rem;
+  height: 6rem;
+  color: #9e9e9e;
+  margin-bottom: 0.75rem;
+}
+
+.daily-route-map__label {
+  color: #616161;
+  font-size: 1rem;
+}
+
+/* small cards under map */
+.daily-route-main-stats {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+/* generic card */
+.daily-route-card {
+  background: #ffffff;
+  border-radius: 0.75rem;
+}
+
+.daily-route-card__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* value row (3/5 คัน) */
+.daily-route-card__value-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.daily-route-card__value-main {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #212121;
+}
+
+.daily-route-card__value-unit {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  color: #616161;
+}
+
+/* progress bar */
+.daily-route-card__progress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.daily-route-card__progress-bar {
+  flex: 1 1 auto;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #e0e0e0;
+  overflow: hidden;
+}
+
+.daily-route-card__progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #2e7d32;
+}
+
+.daily-route-card__progress-label {
+  font-size: 0.85rem;
+  color: #616161;
+}
+
+/* alert card */
+.daily-route-alert-card {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.daily-route-alert-card__content {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.daily-route-alert-card__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212121;
+}
+
+.daily-route-alert-card__count {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #c62828;
+  margin: 0.75rem 0 0;
+}
+
+.daily-route-alert-card__button {
+  width: 100%;
+}
+
+/* waste cards */
+.daily-route-waste {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.daily-route-waste__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.daily-route-waste__label {
+  width: 6rem;
+  font-size: 0.95rem;
+  color: #424242;
+  font-weight: 500;
+}
+
+.daily-route-waste__bar-wrapper {
+  flex: 1 1 auto;
+}
+
+.daily-route-waste__bar {
+  width: 100%;
+  height: 2rem;
+  border-radius: 999px;
+  background: #e0e0e0;
+  overflow: hidden;
+}
+
+.daily-route-waste__bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  display: block;
+}
+
+.daily-route-waste__bar-fill--recycle {
+  background: #81c784;
+}
+
+.daily-route-waste__bar-fill--general {
+  background: #4caf50;
+}
+
+.daily-route-waste__value {
+  width: 4.5rem;
+  text-align: right;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* cost card */
+.daily-route-cost {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.daily-route-cost__block {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daily-route-cost__block--borderless {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.daily-route-cost__text {
+  max-width: 70%;
+}
+
+.daily-route-cost__label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #424242;
+}
+
+.daily-route-cost__hint {
+  font-size: 0.8rem;
+  color: #757575;
+}
+
+.daily-route-cost__value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #212121;
+}
+
+/* table card */
+.daily-route-table-card {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0;
+}
+
+.daily-route-table-card__header {
+  padding: 0.75rem 1.5rem;
+  background: #2e7d32;
+}
+
+.daily-route-table-card__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.daily-route-table-card__body {
+  padding: 0;
+}
+
+.daily-route-table-wrapper {
+  overflow-x: auto;
+}
+
+/* table */
+.daily-route-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.daily-route-table thead {
+  background: #388e3c;
+  color: #ffffff;
+}
+
+.daily-route-table th,
+.daily-route-table td {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+}
+
+.daily-route-table th {
+  text-align: left;
+  font-weight: 600;
+}
+
+.daily-route-table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.daily-route-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* status chip */
+.daily-route-status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #2e7d32;
+  color: #ffffff;
+}
+
+/* table footer / pager */
+.daily-route-table-card__footer {
+  padding: 0.5rem 1.5rem;
+  background: #2e7d32;
+  color: #ffffff;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daily-route-table-card__footer-left {
+  white-space: nowrap;
+}
+
+.daily-route-table-card__footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.daily-route-table-card__page-size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.daily-route-table-card__page-size select {
+  background: #1b5e20;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.daily-route-table-card__range {
+  white-space: nowrap;
+}
+
+.daily-route-table-card__pager-buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.daily-route-table-card__pager-buttons button {
+  border: none;
+  border-radius: 0.25rem;
+  background: #1b5e20;
+  color: #ffffff;
+  padding: 0.15rem 0.5rem;
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* responsive */
+@media (max-width: 960px) {
+  .daily-route-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .daily-route-main-stats {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-// Progress bar animation
-.bg-green-500 {
-  transition: width 0.5s ease-in-out;
-}
-
-// Alert cards styling
-.border-l-4 {
-  transition: all 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+@media (max-width: 600px) {
+  .daily-route-table-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
-}
 
-// Table row hover effect
-tbody tr {
-  &:hover {
-    background-color: #f9fafb;
-    cursor: pointer;
-  }
-}
-
-// Status badge
-.bg-green-700 {
-  &.inline-flex {
-    box-shadow: 0 2px 4px rgba(21, 128, 61, 0.2);
-  }
-}
-
-// Pagination buttons
-button {
-  transition: all 0.2s ease;
-
-  &:not(:disabled) {
-    &:hover {
-      transform: scale(1.05);
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-}
-
-// Responsive table
-@media (max-width: 1024px) {
-  .overflow-x-auto {
-    scrollbar-width: thin;
-    scrollbar-color: #10b981 #f3f4f6;
-
-    &::-webkit-scrollbar {
-      height: 8px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: #f3f4f6;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: #10b981;
-      border-radius: 4px;
-    }
-  }
-}
-
-// Grid responsive adjustments
-@media (max-width: 768px) {
-  .grid-cols-2 {
-    grid-template-columns: 1fr;
-  }
-}
-
-// Custom green theme colors
-$primary-green: #15803d;
-$secondary-green: #166534;
-$light-green: #dcfce7;
-$dark-green: #14532d;
-
-.text-green-800 {
-  color: $primary-green;
-}
-
-.bg-green-800 {
-  background-color: $primary-green;
-}
-
-.bg-green-700 {
-  background-color: $secondary-green;
-}
-
-.bg-green-100 {
-  background-color: $light-green;
-}
-
-// Shadow utilities
-.shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-// Animation for cards on load
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.bg-white {
-  animation: fadeInUp 0.5s ease-out;
-}
-
-// Stagger animation for multiple cards
-.space-y-4 > * {
-  &:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  &:nth-child(2) {
-    animation-delay: 0.2s;
+  .daily-route-table-card__footer-right {
+    justify-content: flex-start;
   }
 }

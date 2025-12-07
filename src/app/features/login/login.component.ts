@@ -230,7 +230,7 @@ export class LoginComponent {
           console.log('✅ Login success:', response);
           this.loading = false;
           // ไปหน้าหลักหลัง login สำเร็จ
-          this.router.navigate(['/']);
+          this.router.navigate(['/home']);
         },
         error: (error) => {
           console.error('❌ Login error:', error);

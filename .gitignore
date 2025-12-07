@@ -46,6 +46,10 @@ Thumbs.db
 .env.*
 !.env.example
 รายละเอียดฐานข้อมูล.txt
+Angular21_guide.txt
 
 # Reference files (archived for future reference)
 /reference
+
+/.angular
+/.history

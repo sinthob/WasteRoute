@@ -1,10 +1,14 @@
 import { Component } from '@angular/core';
-
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-daily-route',
   standalone: true,
-  imports: [],
+  imports: [
+    MatCardModule,
+    MatButtonModule,
+  ],
   templateUrl: './daily-route.page.component.html',
   styleUrls: ['./daily-route.page.component.scss']
 })

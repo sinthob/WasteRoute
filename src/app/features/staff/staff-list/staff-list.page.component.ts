@@ -1,9 +1,17 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { StaffService } from '../../../core/services/staff/staff.service';
 import { Staff, StaffRole } from '../../../shared/models/staff.model';
+
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +25,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-staff-list-page',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatTableModule,
     MatPaginatorModule,
@@ -26,149 +35,135 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
-],
+    MatSnackBarModule,
+  ],
   templateUrl: './staff-list.page.component.html',
-  styleUrl: './staff-list.page.component.scss'
+  styleUrl: './staff-list.page.component.scss',
 })
 export class StaffListPageComponent {
-  private staffService = inject(StaffService);
-  private snack = inject(MatSnackBar);
-  private router = inject(Router);
-  private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
+  private readonly staffService = inject(StaffService);
+  private readonly snack = inject(MatSnackBar);
+  private readonly router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  loading = signal<boolean>(true);
-  error = signal<string | null>(null);
-  data = signal<Staff[]>([]);
-  total = signal<number>(0);
+  // state
+  readonly loading = signal<boolean>(true);
+  readonly error = signal<string | null>(null);
+  readonly data = signal<Staff[]>([]);
+  readonly total = signal<number>(0);
 
   // filters
-  search = signal<string>('');
-  role = signal<string>('');
-  status = signal<string>('');
-  pageIndex = signal<number>(0);
-  pageSize = signal<number>(10);
+  readonly search = signal<string>('');
+  readonly role = signal<string>('');   // DRIVER / COLLECTOR / ADMIN / ''
+  readonly status = signal<string>(''); // ถ้ามี filter สถานะในอนาคต
+  readonly pageIndex = signal<number>(0);
+  readonly pageSize = signal<number>(10);
 
-  displayedColumns = ['prefix', 'firstname', 'lastname', 'role', 'phone', 'actions'];
+  readonly displayedColumns = [
+    'prefix',
+    'firstname',
+    'lastname',
+    'role',
+    'phone',
+    'actions',
+  ];
 
   constructor() {
-    if (this.isBrowser) {
-      effect(() => {
-        // Effect จะเรียก fetch() อัตโนมัติเมื่อ signal ใดๆ เปลี่ยน
-        this.search();
-        this.role();
-        this.status();
-        this.pageIndex();
-        this.pageSize();
-        this.fetch();
-      });
+    if (!this.isBrowser) {
+      // SSR: ไม่ต้องยิง fetch ตอน render ฝั่ง server
+      return;
     }
+
+    // จะยิง fetch ใหม่ทุกครั้งที่ filter / pagination เปลี่ยน
+    effect(() => {
+      // อ่านค่า signals เพื่อผูก dependency
+      this.search();
+      this.role();
+      this.status();
+      this.pageIndex();
+      this.pageSize();
+
+      this.fetch();
+    });
   }
 
-  onSearchChange(value: string) {
+  onSearchChange(value: string): void {
     this.pageIndex.set(0);
     this.search.set(value);
-    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
+    // effect จะเรียก fetch ให้อัตโนมัติ
   }
 
-  onRoleChange(value: string) {
+  onRoleChange(value: string): void {
     this.pageIndex.set(0);
     this.role.set(value);
-    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
   }
 
-  onStatusChange(value: string) {
+  onStatusChange(value: string): void {
     this.pageIndex.set(0);
     this.status.set(value);
-    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
   }
 
-  onPageChange(evt: PageEvent) {
+  onPageChange(evt: PageEvent): void {
     this.pageIndex.set(evt.pageIndex);
     this.pageSize.set(evt.pageSize);
-    // ไม่ต้องเรียก fetch() เพราะ effect จะทำให้
   }
 
-  fetch() {
-  if (!this.isBrowser) return;
-  this.loading.set(true);
+  fetch(): void {
+    this.loading.set(true);
     this.error.set(null);
 
-    // ========== ใช้ข้อมูลจาก Server จริง (Backend) ==========
     const params = {
       search: this.search(),
-      role: this.role() ? this.role().toLowerCase() : '', // แปลงเป็น lowercase สำหรับ server
-      status: this.status() ? this.status().toLowerCase() : '', // แปลงเป็น lowercase สำหรับ server
+      role: this.role() ? this.role().toLowerCase() : '',
+      status: this.status() ? this.status().toLowerCase() : '',
       page: this.pageIndex() + 1,
-      per_page: this.pageSize(), // ใช้ per_page สำหรับ server จริง
+      per_page: this.pageSize(),
     };
-    
-    console.log('🔍 Sending filter params to server:', params);
-    
-    this.staffService
-      .list(params)
-      .subscribe({
-        next: (res: any) => {
-          console.log('📥 Staff list response:', res);
-          // Server ส่ง: {success: true, data: {pagination: {...}, staffs: [...]}}
-          const staffs = res.data?.staffs || [];
-          const total = res.data?.pagination?.total || staffs.length;
-          this.data.set(staffs);
-          this.total.set(total);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.loading.set(false);
-          this.error.set('โหลดข้อมูลล้มเหลว');
-          this.snack.open('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'ปิด', { duration: 3000 });
-          console.error('Error loading staff:', err);
-        },
-      });
 
-    // ========== ใช้ข้อมูลจาก Mock Server (เก็บไว้เป็น reference) ==========
-    // this.staffService
-    //   .list({
-    //     search: this.search(),
-    //     role: this.role(),
-    //     status: this.status(),
-    //     page: this.pageIndex() + 1,
-    //     limit: this.pageSize(), // ใช้ limit สำหรับ mock server
-    //   })
-    //   .subscribe({
-    //     next: (res) => {
-    //       this.data.set(res.data || []);
-    //       this.total.set(res.total ?? res.data?.length ?? 0);
-    //       this.loading.set(false);
-    //     },
-    //     error: (err) => {
-    //       this.loading.set(false);
-    //       this.error.set('โหลดข้อมูลล้มเหลว');
-    //       this.snack.open('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'ปิด', { duration: 3000 });
-    //     },
-    //   });
+    this.staffService.list(params).subscribe({
+      next: (res: any) => {
+        const staffs = res.data?.staffs ?? [];
+        const total = res.data?.pagination?.total ?? staffs.length;
+
+        this.data.set(staffs);
+        this.total.set(total);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.error.set('โหลดข้อมูลล้มเหลว');
+        this.snack.open('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'ปิด', {
+          duration: 3000,
+        });
+        console.error('Error loading staff:', err);
+      },
+    });
   }
 
-  goCreate() {
+  goCreate(): void {
     this.router.navigate(['/staff/new']);
   }
 
-  goEdit(row: Staff) {
+  goEdit(row: Staff): void {
     this.router.navigate(['/staff', row.id, 'edit']);
   }
 
-  view(row: Staff) {
+  view(row: Staff): void {
     this.router.navigate(['/staff', row.id]);
   }
 
-  delete(row: Staff) {
+  delete(row: Staff): void {
     if (!confirm(`ลบพนักงาน ${row.firstname} ${row.lastname}?`)) return;
+
     this.staffService.delete(row.id).subscribe({
       next: () => {
         this.snack.open('ลบสำเร็จ', 'ปิด', { duration: 2000 });
-        this.fetch();
+        this.fetch(); // reload list
       },
-      error: () => this.snack.open('ลบไม่สำเร็จ', 'ปิด', { duration: 2000 }),
+      error: () => {
+        this.snack.open('ลบไม่สำเร็จ', 'ปิด', { duration: 2000 });
+      },
     });
   }
 
