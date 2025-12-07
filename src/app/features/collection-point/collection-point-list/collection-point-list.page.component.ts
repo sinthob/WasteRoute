@@ -95,47 +95,50 @@ export class CollectionPointListPageComponent {
 
   // ฟังก์ชันสำหรับดึงข้อมูล
   fetch() {
-    if (!this.isBrowser) return;
-    this.loading.set(true);
-    this.error.set(null);
+  if (!this.isBrowser) return;
+  this.loading.set(true);
+  this.error.set(null);
 
-    this.collectionPointService.getAll().subscribe({
-      next: (response) => {
-        // กรองข้อมูลตาม filter
-        let filteredData = response.data;
-        
-        if (this.searchId()) {
-          filteredData = filteredData.filter(item => 
-            item.point_id.toString().includes(this.searchId())
-          );
-        }
-        
-        if (this.searchName()) {
-          filteredData = filteredData.filter(item => 
-            item.point_name.toLowerCase().includes(this.searchName().toLowerCase())
-          );
-        }
-        
-        if (this.searchAddress()) {
-          filteredData = filteredData.filter(item => 
-            item.address?.toLowerCase().includes(this.searchAddress().toLowerCase())
-          );
-        }
-        
-        if (this.status()) {
-          filteredData = filteredData.filter(item => item.status === this.status());
-        }
-        
-        this.data.set(filteredData);
-        this.total.set(filteredData.length);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set('เกิดข้อผิดพลาดในการดึงข้อมูล');
-        this.loading.set(false);
+  this.collectionPointService.getAll().subscribe({
+    next: (response) => {
+      // กรองข้อมูลตาม filter
+      let filteredData: CollectionPoint[] = response.data;
+
+      if (this.searchId()) {
+        filteredData = filteredData.filter((item: CollectionPoint) =>
+          item.point_id.toString().includes(this.searchId())
+        );
       }
-    });
-  }  // ฟังก์ชันสำหรับสร้างรายการใหม่
+
+      if (this.searchName()) {
+        filteredData = filteredData.filter((item: CollectionPoint) =>
+          item.point_name.toLowerCase().includes(this.searchName().toLowerCase())
+        );
+      }
+
+      if (this.searchAddress()) {
+        filteredData = filteredData.filter((item: CollectionPoint) =>
+          item.address?.toLowerCase().includes(this.searchAddress().toLowerCase())
+        );
+      }
+
+      if (this.status()) {
+        filteredData = filteredData.filter((item: CollectionPoint) =>
+          item.status === this.status()
+        );
+      }
+
+      this.data.set(filteredData);
+      this.total.set(filteredData.length);
+      this.loading.set(false);
+    },
+    error: () => {
+      this.error.set('เกิดข้อผิดพลาดในการดึงข้อมูล');
+      this.loading.set(false);
+    }
+  });
+}
+  // ฟังก์ชันสำหรับสร้างรายการใหม่
   goCreate() {
     this.router.navigate(["/collection-point/new"]);
   }

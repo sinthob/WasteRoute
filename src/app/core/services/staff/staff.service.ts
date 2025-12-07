@@ -17,7 +17,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 // Observable = ค่าที่จะส่งมาในอนาคต (async). เวลาจะใช้งานใน component มักจะ .subscribe(...) หรือใช้กับ async pipe
 
-import { Staff, StaffListResponse, StaffResponse } from '../../shared/models/staff.model';
+import { Staff, StaffListResponse, StaffResponse } from '../../../shared/models/staff.model';
 // นำ type/interface มาใช้เพื่อให้โค้ดมี type ที่ชัดเจน (ช่วยเวลาเขียน/ refactor และลด bug)
 
 @Injectable({ providedIn: 'root' })
