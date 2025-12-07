@@ -1,0 +1,147 @@
+// Daily Route Page Styles
+
+.container {
+  max-width: 1400px;
+}
+
+// Map placeholder styling
+.bg-gray-200 {
+  background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+  border: 2px dashed #d1d5db;
+}
+
+// Stats card animations
+.bg-white {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Progress bar animation
+.bg-green-500 {
+  transition: width 0.5s ease-in-out;
+}
+
+// Alert cards styling
+.border-l-4 {
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Table row hover effect
+tbody tr {
+  &:hover {
+    background-color: #f9fafb;
+    cursor: pointer;
+  }
+}
+
+// Status badge
+.bg-green-700 {
+  &.inline-flex {
+    box-shadow: 0 2px 4px rgba(21, 128, 61, 0.2);
+  }
+}
+
+// Pagination buttons
+button {
+  transition: all 0.2s ease;
+
+  &:not(:disabled) {
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+// Responsive table
+@media (max-width: 1024px) {
+  .overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #10b981 #f3f4f6;
+
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f3f4f6;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #10b981;
+      border-radius: 4px;
+    }
+  }
+}
+
+// Grid responsive adjustments
+@media (max-width: 768px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Custom green theme colors
+$primary-green: #15803d;
+$secondary-green: #166534;
+$light-green: #dcfce7;
+$dark-green: #14532d;
+
+.text-green-800 {
+  color: $primary-green;
+}
+
+.bg-green-800 {
+  background-color: $primary-green;
+}
+
+.bg-green-700 {
+  background-color: $secondary-green;
+}
+
+.bg-green-100 {
+  background-color: $light-green;
+}
+
+// Shadow utilities
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+// Animation for cards on load
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bg-white {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+// Stagger animation for multiple cards
+.space-y-4 > * {
+  &:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+}

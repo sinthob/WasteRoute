@@ -210,6 +210,18 @@
       "problem_reported": "เต็มแล้ว ต้องเก็บด่วน",
       "regular_capacity": 2000,
       "recycle_capacity": 400
+    },
+    {
+      "point_id": 6,
+      "point_name": "หน้าคอมเพล็กซ์",
+      "latitude": -15.76786,
+      "longitude": 3.12214,
+      "status": "ACTIVE",
+      "point_image": "",
+      "address": "48/98 มหาวิทนาลัขอนเเก่น",
+      "problem_reported": "ถังรีไซเคิลรั่ว",
+      "regular_capacity": 600,
+      "recycle_capacity": 800
     }
   ]
 }

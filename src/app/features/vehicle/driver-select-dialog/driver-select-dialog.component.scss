@@ -1,0 +1,119 @@
+::ng-deep .driver-select-dialog {
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-shape: 16px;
+  }
+}
+
+mat-dialog-content {
+  min-width: 600px;
+  max-width: 800px;
+  min-height: 400px;
+  max-height: 600px;
+  padding: 20px;
+}
+
+.search-container {
+  margin-bottom: 16px;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #64748b;
+  
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  
+  p {
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+.table-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.driver-table {
+  width: 100%;
+  
+  th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+  }
+  
+  tr.mat-mdc-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: #f1f5f9;
+    }
+    
+    &.selected-row {
+      background-color: #dbeafe;
+    }
+  }
+}
+
+.select-icon {
+  cursor: pointer;
+  color: #94a3b8;
+  transition: color 0.2s;
+  
+  &.selected {
+    color: #2563eb;
+  }
+  
+  &:hover {
+    color: #3b82f6;
+  }
+}
+
+.current-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+mat-dialog-actions {
+  padding: 16px 20px;
+  border-top: 1px solid #e5e7eb;
+}

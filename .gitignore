@@ -46,3 +46,6 @@ Thumbs.db
 .env.*
 !.env.example
 รายละเอียดฐานข้อมูล.txt
+
+# Reference files (archived for future reference)
+/reference
