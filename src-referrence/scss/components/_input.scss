@@ -1,6 +1,6 @@
 @mixin input-theme() {
   .rounded-input {
-    --mdc-outlined-text-field-container-shape: calc(var(--mat-table-header-container-height) / 2);
+    --mat-form-field-outlined-container-shape: calc(var(--mat-table-header-container-height) / 2);
 
     .mat-mdc-text-field-wrapper {
       padding-inline: 2rem;

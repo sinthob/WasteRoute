@@ -23,10 +23,10 @@
   .status-field { min-width: 180px; flex: 1 1 200px; }
 
   .mat-mdc-form-field {
-    --mdc-outlined-text-field-outline-color: var(--border-200);
-    --mdc-outlined-text-field-hover-outline-color: var(--brand-700);
-    --mdc-outlined-text-field-focus-outline-color: var(--brand-900);
-    --mdc-outlined-text-field-input-text-color: var(--text-900);
+    --mat-form-field-outlined-outline-color: var(--border-200);
+    --mat-form-field-outlined-hover-outline-color: var(--brand-700);
+    --mat-form-field-outlined-focus-outline-color: var(--brand-900);
+    --mat-form-field-outlined-input-text-color: var(--text-900);
     --mat-mdc-form-field-label-text-color: var(--text-600);
   }
 

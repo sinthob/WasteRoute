@@ -2,8 +2,8 @@
 .staff-form-grid{display:grid;grid-template-columns:1fr;gap:16px}
 @media (min-width:768px){.staff-form-grid{grid-template-columns:1fr !important}}
 .staff-form-page mat-form-field{width:100%;display:block}
-.staff-form-page :where(.mat-mdc-form-field){--mdc-outlined-text-field-outline-color:#cbd5e1;--mdc-outlined-text-field-outline-width:1px}
-.staff-form-page :where(.mat-mdc-text-field-wrapper){--mdc-outlined-text-field-container-color:#fff}
+.staff-form-page :where(.mat-mdc-form-field){--mat-form-field-outlined-outline-color:#cbd5e1;--mat-form-field-outlined-outline-width:1px}
+.staff-form-page :where(.mat-mdc-text-field-wrapper){--mat-form-field-outlined-container-color:#fff}
 
 /* ลบเส้นรอยต่อแนวตั้งใต้ label ของฟิลด์แบบ outline ให้เหมือนหน้า detail */
 :host ::ng-deep .mat-mdc-form-field .mdc-notched-outline__leading { border-right-width: 0 !important; }
