@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CollectionPoint } from '../../../shared/models/collection-point.model';
@@ -16,7 +16,6 @@ import { MatSelectModule } from '@angular/material/select';
   selector: 'app-collection-point-form',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
@@ -25,7 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule
-  ],
+],
   templateUrl: './collection-point-form.component.html',
   styleUrl: './collection-point-form.component.scss'
 })

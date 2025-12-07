@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { CollectionPoint } from '../../../shared/models/collection-point.model';
 import { CollectionPointService } from '../../../core/services/collection-point/collection-point.service';
@@ -13,13 +13,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-collection-point-detail',
   standalone: true,
   imports: [
-    CommonModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule
-  ],
+],
   templateUrl: './collection-point-detail.component.html',
   styleUrl: './collection-point-detail.component.scss'
 })

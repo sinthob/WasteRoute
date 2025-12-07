@@ -1,5 +1,5 @@
 import { Component, effect, inject, signal } from "@angular/core";
-import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { isPlatformBrowser } from "@angular/common";
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from "@angular/router";
 import { CollectionPoint } from '../../../shared/models/collection-point.model';
@@ -19,17 +19,16 @@ import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
   selector: "app-collection-point-list-page",
   standalone: true,
   imports: [
-    CommonModule, 
-    MatTableModule, 
-    MatPaginatorModule, 
-    MatIconModule, 
-    MatButtonModule, 
-    MatFormFieldModule, 
-    MatInputModule, 
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
     MatSnackBarModule
-  ],
+],
   templateUrl: "./collection-point-list.page.component.html",
   styleUrl: "./collection-point-list.page.component.scss",
 })

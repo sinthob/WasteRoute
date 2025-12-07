@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, effect, inject, signal } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +20,6 @@ import { Vehicle, VehicleStatus } from '../../../shared/models/vehicle.model';
   selector: 'app-vehicle-list-page',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatTableModule,
     MatPaginatorModule,
@@ -30,8 +29,8 @@ import { Vehicle, VehicleStatus } from '../../../shared/models/vehicle.model';
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule,
-  ],
+    MatSnackBarModule
+],
   templateUrl: './vehicle-list.page.html',
   styleUrl: './vehicle-list.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

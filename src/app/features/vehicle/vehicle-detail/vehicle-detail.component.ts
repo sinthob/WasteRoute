@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,6 @@ import { DriverSelectDialogComponent, DriverSelectDialogData, DriverSelectDialog
   selector: 'app-vehicle-detail',
   standalone: true,
   imports: [
-    CommonModule,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
@@ -28,8 +27,8 @@ import { DriverSelectDialogComponent, DriverSelectDialogData, DriverSelectDialog
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
-    MatSnackBarModule,
-  ],
+    MatSnackBarModule
+],
   templateUrl: './vehicle-detail.component.html',
   styleUrl: './vehicle-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

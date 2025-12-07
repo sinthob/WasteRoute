@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-daily-route',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './daily-route.page.component.html',
   styleUrls: ['./daily-route.page.component.scss']
 })

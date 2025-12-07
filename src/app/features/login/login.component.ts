@@ -2,67 +2,77 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   template: `
     <div class="login-container">
       <div class="login-card">
         <h1>🗑️ WasteRoute</h1>
         <h2>เข้าสู่ระบบ</h2>
-        
+    
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
             <label for="email">Email</label>
-            <input 
+            <input
               id="email"
-              type="email" 
-              formControlName="email" 
+              type="email"
+              formControlName="email"
               placeholder="admin@waste.com"
               [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-            />
-            <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-              กรุณาใส่ email ที่ถูกต้อง
+              />
+              @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+                <div class="error-message">
+                  กรุณาใส่ email ที่ถูกต้อง
+                </div>
+              }
+            </div>
+    
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                formControlName="password"
+                placeholder="••••••••"
+                [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                />
+                @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+                  <div class="error-message">
+                    กรุณาใส่รหัสผ่าน
+                  </div>
+                }
+              </div>
+    
+              <button
+                type="submit"
+                [disabled]="!loginForm.valid || loading"
+                class="btn-login"
+                >
+                @if (!loading) {
+                  <span>เข้าสู่ระบบ</span>
+                }
+                @if (loading) {
+                  <span>กำลังเข้าสู่ระบบ...</span>
+                }
+              </button>
+    
+              @if (errorMessage) {
+                <div class="error-box">
+                  ❌ {{ errorMessage }}
+                </div>
+              }
+            </form>
+    
+            <div class="hint">
+              <small>💡 ใช้ email และ password ที่ได้รับจากผู้ดูแลระบบ</small>
             </div>
           </div>
-          
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input 
-              id="password"
-              type="password" 
-              formControlName="password" 
-              placeholder="••••••••"
-              [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-            />
-            <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-              กรุณาใส่รหัสผ่าน
-            </div>
-          </div>
-          
-          <button 
-            type="submit" 
-            [disabled]="!loginForm.valid || loading"
-            class="btn-login"
-          >
-            <span *ngIf="!loading">เข้าสู่ระบบ</span>
-            <span *ngIf="loading">กำลังเข้าสู่ระบบ...</span>
-          </button>
-          
-          <div class="error-box" *ngIf="errorMessage">
-            ❌ {{ errorMessage }}
-          </div>
-        </form>
-
-        <div class="hint">
-          <small>💡 ใช้ email และ password ที่ได้รับจากผู้ดูแลระบบ</small>
         </div>
-      </div>
-    </div>
-  `,
+    `,
   styles: [`
     .login-container {
       min-height: 100vh;
